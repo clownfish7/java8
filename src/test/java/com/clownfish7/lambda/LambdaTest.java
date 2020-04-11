@@ -1,5 +1,6 @@
-package com.clownfish7;
+package com.clownfish7.lambda;
 
+import com.clownfish7.Apple;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

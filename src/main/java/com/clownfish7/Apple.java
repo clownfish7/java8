@@ -11,6 +11,10 @@ public class Apple {
     private String color;
     private long weight;
 
+    public Apple() {
+
+    }
+
     public Apple(String color, long weight) {
         this.color = color;
         this.weight = weight;
@@ -22,6 +26,14 @@ public class Apple {
 
     public long getWeight() {
         return weight;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setWeight(long weight) {
+        this.weight = weight;
     }
 
     @Override
