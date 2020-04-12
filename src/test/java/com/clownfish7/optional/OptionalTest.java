@@ -38,40 +38,45 @@ public class OptionalTest {
     }
 
     @Test
-    public void testOptionalOrElse(){
+    public void testOptionalOrElse() {
         Optional<Person> optional = Optional.empty();
         Person person = optional.orElse(new Person());
     }
 
     @Test
-    public void testOptionalOrElseGet(){
+    public void testOptionalOrElseGet() {
         Optional<Person> optional = Optional.empty();
         Person person = optional.orElseGet(Person::new);
     }
 
     @Test
-    public void testOptionalOrElseThrow(){
+    public void testOptionalOrElseThrow() {
         Optional<Person> optional = Optional.empty();
+        try {
 //        Person person = optional.orElseThrow(RuntimeException::new);
-        Person person = optional.orElseThrow(()->new RuntimeException("err"));
+            Person person = optional.orElseThrow(() -> new RuntimeException("err"));
+        } catch (Exception e) {
+            assert e instanceof RuntimeException : "err";
+            assert e.getMessage().equals("err") : "err";
+        }
     }
 
     @Test
-    public void testOptionalFilter(){
+    public void testOptionalFilter() {
         Optional<Person> optional = Optional.of(new Person());
         Optional<Person> person = optional.filter(p -> null == p.getCar());
         person.ifPresent(System.out::println);
     }
 
     @Test
-    public void testOptionalMap(){
+    public void testOptionalMap() {
         Optional<Person> optional = Optional.of(new Person());
         Optional<Optional<Car>> car = optional.map(Person::getCar);
         assert !car.isPresent() : "err";
     }
 
     @Test
-    public void testOptionalFlatMap(){
+    public void testOptionalFlatMap() {
         Optional<Person> optional = Optional.empty();
         String result = optional.flatMap(Person::getCar)
                 .flatMap(Car::getInsurance)
@@ -80,7 +85,7 @@ public class OptionalTest {
     }
 
     @Test
-    public void testOptionalFlatMap2(){
+    public void testOptionalFlatMap2() {
         Optional<Person> optional = Optional.of(new Person());
         Optional<Car> car = optional.flatMap(Person::getCar);
         Optional<Insurance> insurance = car.flatMap(Car::getInsurance);
