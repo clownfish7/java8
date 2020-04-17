@@ -2,7 +2,7 @@ package com.clownfish7.defaultmethod;
 
 import org.junit.jupiter.api.Test;
 
-public class DefaultInAction {
+public class InterfaceDefaultMethodTest {
 
     @Test
     public void test() {
