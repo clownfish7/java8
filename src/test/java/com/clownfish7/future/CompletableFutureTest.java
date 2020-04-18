@@ -2,12 +2,15 @@ package com.clownfish7.future;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author yzy
@@ -31,10 +34,7 @@ public class CompletableFutureTest {
             Optional.of(v).ifPresent(System.out::println);
             Optional.of(t).ifPresent(Throwable::printStackTrace);
         });
-        System.out.println("----- no blocking ----- 1");
-        System.out.println("----- no blocking ----- 2");
-        System.out.println("----- no blocking ----- 3");
-        TimeUnit.SECONDS.sleep(5);
+        wait5();
     }
 
     private double get() {
@@ -61,10 +61,7 @@ public class CompletableFutureTest {
                     Optional.of(v).ifPresent(System.out::println);
                     Optional.of(t).ifPresent(Throwable::printStackTrace);
                 });
-        System.out.println("----- no blocking ----- 1");
-        System.out.println("----- no blocking ----- 2");
-        System.out.println("----- no blocking ----- 3");
-        TimeUnit.SECONDS.sleep(5);
+        wait5();
     }
 
     public static void main(String[] args) {
@@ -74,7 +71,7 @@ public class CompletableFutureTest {
             return t;
         });
         System.out.println("----- no blocking ----- ");
-        CompletableFuture.supplyAsync(()->{
+        CompletableFuture.supplyAsync(() -> {
             try {
                 TimeUnit.SECONDS.sleep(2);
             } catch (InterruptedException e) {
@@ -91,5 +88,33 @@ public class CompletableFutureTest {
         System.out.println("----- no blocking ----- 1");
         System.out.println("----- no blocking ----- 2");
         System.out.println("----- no blocking ----- 3");
+    }
+
+    @Test
+    public void testThenApply() throws InterruptedException {
+        CompletableFuture.supplyAsync(this::get)
+                .thenApply(d -> d * 10)
+                .whenComplete((v, t) -> {
+                    Optional.of(v).ifPresent(System.out::println);
+                });
+        wait5();
+    }
+
+    @Test
+    public void testThenApplyPro() throws InterruptedException {
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+        List<Integer> result = list.stream()
+                .map(i -> CompletableFuture.supplyAsync(() -> i + 1, Executors.newFixedThreadPool(5)))
+                .map(future -> future.thenApply(i -> i * 10))
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
+        Optional.of(result).ifPresent(System.out::println);
+    }
+
+    private void wait5() throws InterruptedException {
+        System.out.println("----- no blocking ----- 1");
+        System.out.println("----- no blocking ----- 2");
+        System.out.println("----- no blocking ----- 3");
+        TimeUnit.SECONDS.sleep(5);
     }
 }
